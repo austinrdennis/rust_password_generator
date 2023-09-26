@@ -1,11 +1,39 @@
+use std::io;
 use rand::Rng;
 use clearscreen::ClearScreen;
 
 fn main() {
-    clear();
-    let password: String = generate_password(12).into_iter().collect();
-    println!("{}", password);
+    let mut length: u8;
+    
+    length = loop {
+        clear_screen();
+        println!("Desired password length? [5-128 characters]");
+        let mut buffer = String::new();
+        io::stdin()
+            .read_line(&mut buffer)
+            .expect("Failed to read line");
 
+        length = match buffer.trim().parse() {
+            Ok(num) => num,
+            Err(_) => continue,
+        };
+
+        if length < 5 {
+            length = 5
+        }
+        else if length > 128 {
+            length = 128
+        }
+
+        break length;
+    };
+
+
+    let password: String = generate_password(length).into_iter().collect();
+
+    clear_screen();
+    println!("Length: {length}");
+    println!("Password: {password}");
 }
 
 fn generate_password(length: u8) -> Vec<char> {
@@ -22,6 +50,8 @@ fn generate_password(length: u8) -> Vec<char> {
    password
 }
 
-fn clear() {
-    ClearScreen::default().clear().expect("failed to clear the screen");
+fn clear_screen() {
+    ClearScreen::default()
+        .clear()
+        .expect("failed to clear the screen");
 }
