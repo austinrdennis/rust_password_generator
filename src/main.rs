@@ -104,14 +104,42 @@ fn main() {
         break feature_flags[2];
     };
 
-    let password: String = generate_password(length, feature_flags).into_iter().collect();
+    let mut password: String = generate_password(length, feature_flags).into_iter().collect();
 
-    clear_screen();
-    println!("Length: {length}");
-    println!("Using numbers (0-9): {}", feature_flags[0]);
-    println!("Using CAPTIAL LETTERS: {}", feature_flags[1]);
-    println!("Using special characters (@, %, !, etc): {}", feature_flags[2]);
-    println!("Password: {password}");
+    loop {
+        clear_screen();
+        println!("Password: {password}");
+        println!("");
+        println!("YES/QUIT: Regenerate password with same parameters? Type quit or no to exit the program.");
+        let mut buffer = String::new();
+        io::stdin()
+            .read_line(&mut buffer)
+            .expect("Failed to read line");
+
+        let buffer = buffer.to_lowercase();
+        let buffer = buffer.trim();
+
+        let regenerate = match buffer {
+            "y"     => true,
+            "yes"   => true,
+            "true"  => true,
+            "n"     => false,
+            "no"    => false,
+            "false" => false,
+            "q"     => false,
+            "quit"  => false,
+            _       => continue,
+        };
+
+        if regenerate == true {
+            password = generate_password(length, feature_flags).into_iter().collect();
+            continue;
+        }
+        else {
+            break;
+        }
+
+    }
 }
 
 fn generate_password(length: u8, feature_flags: [bool; 3]) -> Vec<char> {
