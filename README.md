@@ -1,4 +1,4 @@
-### rust_password_generator
+### Rust Password Generator
 A simple password generator written in Rust.
 
 **This code is not intended to be used in any production setting!** 
